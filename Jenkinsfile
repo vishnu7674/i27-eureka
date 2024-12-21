@@ -35,7 +35,7 @@ pipeline {
                     withSonarQubeEnv('SonarQube'){  //the name we saved in system under manage jenkins
                         sh """
                         mvn clean verify sonar:sonar \
-                            -Dsonar.projectKey=i27-Eureka \
+                            -Dsonar.projectKey=i27-eureka \
                             -Dsonar.host.url=${env.SONAR_URL} \
                             -Dsonar.login=${SONAR_TOKEN}
                     """
