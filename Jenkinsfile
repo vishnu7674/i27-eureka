@@ -18,16 +18,23 @@ pipeline {
     stages {
         stage ('Build') {
             steps {
-                echo "Building the ${env.APPLICATION_NAME} Application"
-                sh 'mvn clean package -DSkipTests=true'
+                script{
+                    sh """
+                    echo "Building the ${env.APPLICATION_NAME} Application"
+                    mvn clean package -DSkipTests=true
+                """
+
+                }
+                
             }
         }
         stage('sonar') {
             steps {
-                echo "Starting sonar scan"
-                withSonarQubeEnv('SonarQube'){  //the name we saved in system under manage jenkins
-                    sh """
-                    mvn sonar:sonar \
+                script {
+                    echo "Starting sonar scan"
+                    withSonarQubeEnv('SonarQube'){  //the name we saved in system under manage jenkins
+                        sh """
+                        mvn sonar:sonar \
                         -Dsonar.projectKey=i27-eureka \
                         -Dsonar.host.url= ${env.SONAR_URL} \
                         -Dsonar.login=${SONAR_TOKEN}
@@ -36,6 +43,9 @@ pipeline {
                 timeout (time: 2, unit: 'MINUTES'){
                     waitForQualityGate abortPipeline: true
                 }
+
+                }
+                
                 
                 
             }
