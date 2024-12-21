@@ -12,7 +12,7 @@ pipeline {
 
     environment {
         APPLICATION_NAME = "eureka" 
-        SONAR_TOKEN =  credentials('sonar_creds')
+        SONAR_TOKEN =  credentials('sonar-creds2')
         SONAR_URL = "http://34.60.91.201:9000"
     }
     stages {
@@ -34,10 +34,10 @@ pipeline {
                     echo "Starting sonar scan"
                     withSonarQubeEnv('SonarQube'){  //the name we saved in system under manage jenkins
                         sh """
-                        mvn sonar:sonar \
-                        -Dsonar.projectKey=i27-eureka \
-                        -Dsonar.host.url= ${env.SONAR_URL} \
-                        -Dsonar.login=${SONAR_TOKEN}
+                        mvn clean verify sonar:sonar \
+                            -Dsonar.projectKey=pertclinic \
+                            -Dsonar.host.url=${env.SONAR_URL} \
+                            -Dsonar.login=${SONAR_TOKEN}
                     """
                 }
                 timeout (time: 2, unit: 'MINUTES'){
@@ -45,6 +45,7 @@ pipeline {
                 }
 
                 }
+                
                 
                 
                 
