@@ -28,7 +28,7 @@ pipeline {
                 
             }
         }
-        stage('sonar') {
+        stage ('sonar') {
             steps {
                 script {
                     echo "Starting sonar scan"
@@ -45,6 +45,11 @@ pipeline {
                 }
 
                 }
+        stage ('Docker') {
+            steps {
+                echo 'currently in docker stage'
+            }
+        }
                 
 
                 
