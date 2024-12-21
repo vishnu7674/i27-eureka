@@ -14,8 +14,11 @@ pipeline {
         APPLICATION_NAME = "eureka" 
         SONAR_TOKEN =  credentials('sonar-creds2')
         SONAR_URL = "http://34.60.91.201:9000"
+        // if any errors with readMavenPom, make sure pipeline-utility-steps plugin is install in your jenkins, if not do install
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
+        DOCKER_HUB = "docker.io/vishnu7674"
+
     }
     stages {
         stage ('Build') {
@@ -55,6 +58,13 @@ pipeline {
                 // My Destination artificat format: i27-eureka-buildnumber-branchname.jar
                 echo "My JAR Source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
                 echo "MY JAR Destination: i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
+                sh """
+                    echo "****************************** Building docker image *************************************"
+                    pwd
+                    ls -la
+                    #docker build --no-cache -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} 
+                    #docker.io/vishnu7674/eureka:
+                """
             }
         }
     }
