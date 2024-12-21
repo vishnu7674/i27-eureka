@@ -45,6 +45,8 @@ pipeline {
                 }
 
                 }
+            }
+        }
         stage ('Docker') {
             steps {
                 echo 'currently in docker stage'
