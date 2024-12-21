@@ -52,11 +52,5 @@ pipeline {
                 echo 'currently in docker stage'
             }
         }
-                
-
-                
-                
-            }
-        }
     }
 }
