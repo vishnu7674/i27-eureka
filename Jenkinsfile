@@ -68,7 +68,7 @@ pipeline {
                     docker build --no-cache --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd
                     #docker.io/vishnu7674/eureka:
                     echo "******************** Login to docker registry ******************************************"
-                    docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+                    docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}
                     docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
                 """
             }
