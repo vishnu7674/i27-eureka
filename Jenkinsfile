@@ -77,17 +77,34 @@ pipeline {
             steps {
                 echo "Deploying to dev server"
                 withCredentials([usernamePassword(credentialsId: 'maha_ssh_docker_server_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                  sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip \"docker run -dit --name ${env.APPLICATION_NAME}-dev -p 5761:8761 ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} \""
+
+                    script {
+                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip \"docker pull ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} \""
+                        try {
+                            // stop the container
+                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker stop ${env.APPLICATION_NAME}"
+                            // remove the continer
+                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker rm ${env.APPLICATION_NAME}"
+                        }
+                        catch(err) {
+                            echo "Error caught: $err"
+                        }
+                        // create the container
+                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker run -dit --name ${env.APPLICATION_NAME}-dev -p 5761:8761 ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}" 
+                    }
+                  
+
+                 
                 }
                 // create a container
                 // docker container create imagename
                 // docker run -dit --name containername imageName
                 // docker run -dit --name eureka-dev
                // docker run -dit --name ${env.APPLICATION_NAME}-dev -p 5761:8761 ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} 
+               // run -dit --name ${env.APPLICATION_NAME}-dev -p 5761:8761
             }
         }
 
-    }
 }
 
 //sshpass -p password ssh -o StrictHostKeyChecking=no username@dockerserverip
