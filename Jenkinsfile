@@ -83,7 +83,7 @@ pipeline {
                 // docker container create imagename
                 // docker run -dit --name containername imageName
                 // docker run -dit --name eureka-dev
-                docker run -dit --name ${env.APPLICATION_NAME}-dev -p 5761:8761 ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} 
+               // docker run -dit --name ${env.APPLICATION_NAME}-dev -p 5761:8761 ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} 
             }
         }
 
