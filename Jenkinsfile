@@ -73,6 +73,16 @@ pipeline {
                 """
             }
         }
+        stage ('Deploy to dev') {
+            steps {
+                echo "Deploying to dev server"
+                withCredentials([usernamePassword(credentialsID: 'maha_ssh_docker_server_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                  sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@dev_ip \"hostname -i\""
+                }
+            }
+        }
 
     }
 }
+
+//sshpass -p password ssh -o StrictHostKeyChecking=no username@dockerserverip
