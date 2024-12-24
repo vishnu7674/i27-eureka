@@ -173,7 +173,7 @@ pipeline {
             }
         }
     }
-}
+
 //method for maven build
 
 def buildApp() {
