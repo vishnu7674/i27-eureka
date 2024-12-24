@@ -25,11 +25,7 @@ pipeline {
         stage ('Build') {
             steps {
                 script{
-                    sh """
-                    echo "Building the ${env.APPLICATION_NAME} Application"
-                    mvn clean package -DSkipTests=true
-                """
-
+                    buildApp().call
                 }
                 
             }
@@ -57,20 +53,11 @@ pipeline {
             steps {
                 // existing artifact format: i27-eureka-0.0.1-SNAPSHOT.jar
                 // My Destination artificat format: i27-eureka-buildnumber-branchname.jar
-                echo "My JAR Source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
-                echo "MY JAR Destination: i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
-                sh """
-                    echo "****************************** Building docker image *************************************"
-                    pwd
-                    ls -la 
-                    cp ${WORKSPACE}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
-                    ls -la ./.cicd
-                    docker build --no-cache --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd
-                    #docker.io/vishnu7674/eureka:
-                    echo "******************** Login to docker registry ******************************************"
-                    docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}
-                    docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
-                """
+                //echo "My JAR Source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
+                //echo "MY JAR Destination: i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
+                script {
+                    dockerbuildAndpush().call
+                }
             }
         }
         stage ('Deploy to Dev') {
@@ -107,8 +94,31 @@ pipeline {
         }
     }
 }
+//method for maven build
 
+def buildApp() {
+    return {
+        echo "Building the ${env.APPLICATION_NAME} Application"
+        sh 'mvn clean package -DSkipTests=true'
+    }
+}
 
+//method for docker build and push
+def dockerbuildAndpush() {
+    return {
+        echo "****************************** Building docker image *************************************"
+        pwd
+        ls -la 
+        cp ${WORKSPACE}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
+        ls -la ./.cicd
+        sh "docker build --no-cache --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd"
+        echo "******************** Login to docker registry ******************************************"
+        sh "docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}"
+        sh "docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+
+    }
+}
+// method for deploy containers in different env
 def dockerDeploy(envDeploy, hostPort, contPort) {
     return {
         echo "Deploying to dev $envDeploy environment"
