@@ -73,28 +73,62 @@ pipeline {
                 """
             }
         }
-        stage ('Deploy to dev') {
+        stage ('Deploy to Dev') {
             steps {
-                echo "Deploying to dev server"
-                withCredentials([usernamePassword(credentialsId: 'maha_ssh_docker_server_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                script {
+                    //envDeploy, hostPort, contPort
+                    dockerDeploy('dev', '5761', '8761').call()
+                }
+            }
+        }
+        stage ('Deploy to Test') {
+            steps {
+                script {
+                    //envDeploy, hostPort, contPort
+                    dockerDeploy('Test', '6761', '8761').call()
+                }
+            }
+        }
+        stage ('Deploy to Stage') {
+            steps {
+               script {
+                    //envDeploy, hostPort, contPort
+                    dockerDeploy('stage', '7761', '8761').call()
+                }
+            }
+        }
+        stage ('Deploy to prod') {
+            steps {
+              script {
+                    //envDeploy, hostPort, contPort
+                    dockerDeploy('prod', '8761', '8761').call()
+                }
+            }
+        }
+    }
+}
+
+
+def dockerDeploy(envDeploy, hostPort, contPort) {
+    return {
+        echo "Deploying to dev $envDeploy environment"
+            withCredentials([usernamePassword(credentialsId: 'maha_ssh_docker_server_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
 
                     script {
                         sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip \"docker pull ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} \""
                         try {
                             // stop the container
-                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker stop ${env.APPLICATION_NAME}-dev"
+                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker stop ${env.APPLICATION_NAME}-$envDeploy"
                             // remove the continer
-                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker rm ${env.APPLICATION_NAME}-dev"
+                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker rm ${env.APPLICATION_NAME}-$envDeploy"
                         }
                         catch(err) {
                             echo "Error caught: $err"
                         }
                         // create the container
-                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker run -dit --name ${env.APPLICATION_NAME}-dev -p 5761:8761 ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}" 
+                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$dev_ip docker run -dit --name ${env.APPLICATION_NAME}-$envDeploy -p $hostPort:$contPort ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}" 
                     }
                 }
-            }
-        }
     }
 }
 // create a container
