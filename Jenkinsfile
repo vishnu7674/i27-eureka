@@ -169,10 +169,12 @@ pipeline {
               script {
                     //envDeploy, hostPort, contPort
                     dockerDeploy('prod', '8761', '8761').call()
+                
                 }
             }
         }
     }
+    
 
 //method for maven build
 
