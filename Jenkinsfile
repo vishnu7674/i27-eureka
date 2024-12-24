@@ -5,7 +5,7 @@ pipeline {
         label 'k8s-slave'
     }
     parameters {
-        choice(name: 'ScanOnly',
+        choice(name: 'scanOnly',
             choices: 'no\nyes',
             description: 'This will ScanOnly your application'
         )
