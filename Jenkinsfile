@@ -25,7 +25,7 @@ pipeline {
         stage ('Build') {
             steps {
                 script{
-                    buildApp().call
+                    buildApp().call()
                 }
                 
             }
@@ -56,7 +56,7 @@ pipeline {
                 //echo "My JAR Source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
                 //echo "MY JAR Destination: i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
                 script {
-                    dockerbuildAndpush().call
+                    dockerbuildAndpush().call()
                 }
             }
         }
