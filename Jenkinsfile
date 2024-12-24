@@ -4,6 +4,42 @@ pipeline {
     agent {
         label 'k8s-slave'
     }
+    parameters {
+        choice(name: 'Scan'
+            choices: 'yes/no'
+            description: 'This will scan your application'
+        )
+        choice(name: 'buildOnly'
+            choices: 'yes/no'
+            description: 'This will build your application'
+        )
+        choice(name: 'dockerpush'
+            choices: 'yes/no'
+            description: 'his will build docker image and push'
+        )
+        choice(name: 'deployToDev'
+            choices: 'yes/no'
+            description: 'This will Deploy your app to Dev env'
+        )
+        choice(name: 'deployToTest'
+            choices: 'yes/no'
+            description: 'This will Deploy your app to Test env'
+        )
+        choice(name: 'deployTostage'
+            choices: 'yes/no'
+            description: 'This will Deploy your app to stage env'
+        )
+        choice(name: 'deployToprod'
+            choices: 'yes/no'
+            description: 'This will Deploy your app to stage prod'
+        )
+        
+    }
+
+
+        
+
+    }
 
     tools {
         maven 'Maven-3.8.8'
@@ -23,6 +59,14 @@ pipeline {
     }
     stages {
         stage ('Build') {
+            when {
+                anyOf {
+                    expression {
+                        params.dockerpush == 'yes'
+                        params.buildOnly == 'yes'
+                    }
+                }
+            }
             steps {
                 script{
                     buildApp().call()
@@ -31,6 +75,15 @@ pipeline {
             }
         }
         stage ('sonar') {
+            when {
+                anyOf {
+                    expression {
+                        params.scan == 'yes'
+                        params.buildOnly == 'yes'
+                        params.dockerpush == 'yes'
+                    }
+                }
+            }
             steps {
                 script {
                     echo "Starting sonar scan"
@@ -50,6 +103,13 @@ pipeline {
             }
         }
         stage ('Docker build and push') {
+            when {
+                anyOf {
+                    expression {
+                        params.dockerpush == 'yes'
+                    }
+                }
+            }
             steps {
                 // existing artifact format: i27-eureka-0.0.1-SNAPSHOT.jar
                 // My Destination artificat format: i27-eureka-buildnumber-branchname.jar
@@ -61,6 +121,11 @@ pipeline {
             }
         }
         stage ('Deploy to Dev') {
+            when {
+                expression {
+                    params.deployToDev == 'yes'
+                }
+            }
             steps {
                 script {
                     //envDeploy, hostPort, contPort
@@ -69,6 +134,11 @@ pipeline {
             }
         }
         stage ('Deploy to Test') {
+            when {
+                expression {
+                    params.deployToTest == 'yes'
+                }
+            }
             steps {
                 script {
                     //envDeploy, hostPort, contPort
@@ -77,6 +147,11 @@ pipeline {
             }
         }
         stage ('Deploy to Stage') {
+            when {
+                expression {
+                    params.deployTostage == 'yes'
+                }
+            }
             steps {
                script {
                     //envDeploy, hostPort, contPort
@@ -85,6 +160,11 @@ pipeline {
             }
         }
         stage ('Deploy to prod') {
+            when {
+                expression {
+                    params.deployToprod == 'yes'
+                }
+            }
             steps {
               script {
                     //envDeploy, hostPort, contPort
