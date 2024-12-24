@@ -5,32 +5,32 @@ pipeline {
         label 'k8s-slave'
     }
     parameters {
-        choice(name: 'Scan'
-            choices: 'yes/no'
+        choice(name: 'Scan',
+            choices: 'yes/no',
             description: 'This will scan your application'
         )
-        choice(name: 'buildOnly'
-            choices: 'yes/no'
+        choice(name: 'buildOnly',
+            choices: 'yes/no',
             description: 'This will build your application'
         )
-        choice(name: 'dockerpush'
-            choices: 'yes/no'
+        choice(name: 'dockerpush',
+            choices: 'yes/no',
             description: 'his will build docker image and push'
         )
-        choice(name: 'deployToDev'
-            choices: 'yes/no'
+        choice(name: 'deployToDev',
+            choices: 'yes/no',
             description: 'This will Deploy your app to Dev env'
         )
-        choice(name: 'deployToTest'
-            choices: 'yes/no'
+        choice(name: 'deployToTest',
+            choices: 'yes/no',
             description: 'This will Deploy your app to Test env'
         )
-        choice(name: 'deployTostage'
-            choices: 'yes/no'
+        choice(name: 'deployTostage',
+            choices: 'yes/no',
             description: 'This will Deploy your app to stage env'
         )
-        choice(name: 'deployToprod'
-            choices: 'yes/no'
+        choice(name: 'deployToprod',
+            choices: 'yes/no',
             description: 'This will Deploy your app to stage prod'
         )
         
