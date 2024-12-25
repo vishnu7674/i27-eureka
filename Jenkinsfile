@@ -147,9 +147,23 @@ pipeline {
             }
         }
         stage ('Deploy to Stage') {
+            // when {
+            //     expression {
+            //         params.deployTostage == 'yes'
+            //     }
+            // }
             when {
-                expression {
-                    params.deployTostage == 'yes'
+                allOf {
+                    anyOf {
+                        expression{
+                            params.deployTostage == 'yes'
+                        }
+                        
+                    }
+                    anyOf {
+                        branch 'release/*'
+                        
+                    }
                 }
             }
             steps {
