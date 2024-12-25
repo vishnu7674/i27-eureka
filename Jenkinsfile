@@ -155,10 +155,16 @@ pipeline {
             when {
                 allOf {
                     anyOf {
-                        params.deployTostage == 'yes'
+                        expression{
+                            params.deployTostage == 'yes'
+                        }
+                        
                     }
                     anyOf {
-                        branch 'release/*'
+                        expression {
+                            branch 'release/*'
+                        }
+                        
                     }
                 }
             }
