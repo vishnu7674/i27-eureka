@@ -180,8 +180,7 @@ pipeline {
                     anyOf {
                         expression {
                             params.deployToprod == 'yes'
-                }
-
+                        }
                     }
                     anyOf {
                         tag pattern: "v\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}",  comparator: "REGEXP" //v1.2.3
@@ -193,6 +192,7 @@ pipeline {
             steps {
                 timeout(time: 300, unit: 'SECONDS' ) { // SECONDS, MINUTES,HOURS{
                     input message: "Deploying to ${env.APPLICATION_NAME} to production ??", ok: 'yes', submitter: 'vishnudev'
+                }
               script {
                     //envDeploy, hostPort, contPort
                     dockerDeploy('prod', '8761', '8761').call()
