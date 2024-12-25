@@ -127,6 +127,7 @@ pipeline {
             steps {
                 script {
                     //envDeploy, hostPort, contPort
+                    imageValidation().call()
                     dockerDeploy('dev', '5761', '8761').call()
                 }
             }
@@ -140,6 +141,7 @@ pipeline {
             steps {
                 script {
                     //envDeploy, hostPort, contPort
+                    imageValidation().call()
                     dockerDeploy('Test', '6761', '8761').call()
                 }
             }
@@ -153,6 +155,7 @@ pipeline {
             steps {
                script {
                     //envDeploy, hostPort, contPort
+                    imageValidation().call()
                     dockerDeploy('stage', '7761', '8761').call()
                 }
             }
@@ -196,6 +199,28 @@ def dockerbuildAndpush() {
 
     }
 }
+
+def imageValidation() {
+    return {
+        println("attempting to pull the docker image")
+        try {
+            sh "docker pull ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
+            println("Image is Pulled Successfully")
+
+        }
+        catch(Exception e) {
+            println("Oops!, the docker image with this tag is not available, So creating the image")
+            buildApp().call()
+            dockerbuildAndpush().call()
+
+        }
+             
+    }
+}
+
+
+
+
 // method for deploy containers in different env
 def dockerDeploy(envDeploy, hostPort, contPort) {
     return {
