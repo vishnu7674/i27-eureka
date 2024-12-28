@@ -2,5 +2,5 @@
 
 @library("com.i27academy.slb@master")
 dockerPipeline(
-    appname: 'eureka'
+    appName: 'eureka'
 )
