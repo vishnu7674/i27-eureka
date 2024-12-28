@@ -1,6 +1,6 @@
 // call the shared lib
 
-@library("com.i27academy.slb@master")
+@Library("com.i27academy.slb@master") _
 dockerPipeline(
     appName: 'eureka'
 )
