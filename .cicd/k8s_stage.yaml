@@ -23,7 +23,7 @@ metadata:
   name: i27-eureka-stage-svc
 spec:
   selector:
-    app: i27-eureka
+    app: i27-eureka-stage
   ports:
     - protocol: TCP
       port: 80

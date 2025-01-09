@@ -23,7 +23,7 @@ metadata:
   name: i27-eureka-dev-svc
 spec:
   selector:
-    app: i27-eureka
+    app: i27-eureka-dev
   ports:
     - protocol: TCP
       port: 80
