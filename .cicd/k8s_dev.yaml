@@ -1,0 +1,32 @@
+# create a deployment file for Eureka
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: i27-eureka-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: i27-eureka-dev
+  template:
+    metadata:
+      labels:
+        app: i27-eureka-dev
+    spec:
+      containers:
+      - name: i27-eureka-dev
+        image: DIT #Docker image tag which will be replaced later by sharedlib
+---
+apiVersion: v1
+kind: service
+metadata:
+  name: i27-eureka-dev-svc
+spec:
+  selector:
+    app: i27-eureka
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8761
+  type: NodePort
+        

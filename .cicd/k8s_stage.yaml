@@ -1,0 +1,32 @@
+# create a deployment file for Eureka in stage environment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: i27-eureka-stage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: i27-eureka-stage
+  template:
+    metadata:
+      labels:
+        app: i27-eureka-stage
+    spec:
+      containers:
+      - name: i27-eureka-stage
+        image: DIT #Docker image tag which will be replaced later by sharedlib
+---
+apiVersion: v1
+kind: service
+metadata:
+  name: i27-eureka-stage-svc
+spec:
+  selector:
+    app: i27-eureka
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8761
+  type: NodePort
+        
