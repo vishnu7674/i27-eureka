@@ -18,7 +18,7 @@ spec:
         image: DIT #Docker image tag which will be replaced later by sharedlib
 ---
 apiVersion: v1
-kind: service
+kind: Service
 metadata:
   name: i27-eureka-prod-svc
 spec:
