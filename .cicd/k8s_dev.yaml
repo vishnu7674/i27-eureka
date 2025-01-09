@@ -21,8 +21,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: i27-eureka-dev-svc
+  labels:                # Adding labels to the Service metadata
+    app: i27-eureka-dev  # Label to match the Pod's label
 spec:
-  selector:
+  selector:              # Selector to match the Pod's label
     app: i27-eureka-dev
   ports:
     - protocol: TCP
