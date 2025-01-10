@@ -29,4 +29,20 @@ spec:
       port: 80
       targetPort: 8761
   type: NodePort
-        
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: i27-eureka-stage-ingress
+spec:
+  rules:
+  - host: eureka-stage.vishnuapple.in
+    http:
+      paths: 
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: i27-eureka-stage-svc
+            port:
+              number: 80     
