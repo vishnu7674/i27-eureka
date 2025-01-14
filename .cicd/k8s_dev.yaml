@@ -8,13 +8,13 @@ spec:
   selector:
     matchLabels:
       app: i27-eureka-dev
-  template:
-    imagePullSecrets:
-      - name: jfrog-docker-secret # this is we are calling kubernetes secrets which we gave the command 
+  template: 
     metadata:
       labels:
         app: i27-eureka-dev
     spec:
+      imagePullSecrets:
+      - name: jfrog-docker-secret # this is we are calling kubernetes secrets which we gave the command
       containers:
       - name: i27-eureka-dev
         image: DIT #Docker image tag which will be replaced later by sharedlib
