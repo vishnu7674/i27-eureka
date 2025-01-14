@@ -13,6 +13,8 @@ spec:
       labels:
         app: i27-eureka-tst
     spec:
+      imagePullSecrets:
+      - name: jfrog-docker-secret # this is we are calling kubernetes secrets which we gave the command
       containers:
       - name: i27-eureka-tst
         image: DIT #Docker image tag which will be replaced later by sharedlib
