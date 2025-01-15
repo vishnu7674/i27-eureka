@@ -1,0 +1,9 @@
+name: i27-eureka
+fullname: i27-eureka-prod
+replicas:
+  default: 2
+image: 
+  name: i27devops.jfrog.io/cont-images-docker-docker/eureka
+  tag: random
+targetPort: 8761
+
